@@ -3,6 +3,7 @@ package com.example.demo.config;
 import com.example.demo.service.JwtService;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,12 +60,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
-        } catch (ExpiredJwtException ex) {
-        	System.out.println(ex.getMessage());
-        	throw ex;
-        }
-        catch (Exception ex) {
-        	throw ex;
+        }  catch (ExpiredJwtException | MalformedJwtException ex) {
+            // Do not handle the exception here; let it propagate to the global exception handler
+            throw ex; // This will be caught by GlobalExceptionHandler
+        } catch (Exception ex) {
+            // Handle other exceptions as needed
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("Authentication error");
+            return; // Stop further processing
         }
         filterChain.doFilter(request, response);
     }

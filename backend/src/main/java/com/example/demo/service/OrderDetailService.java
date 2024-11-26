@@ -35,6 +35,7 @@ public class OrderDetailService {
         return orderDetailRepository.save(orderDetail);
     }
 
+    @Transactional
     public OrderDetail updateOrderDetail(Long id, OrderDetail orderDetail) {
         if (orderDetailRepository.existsById(id)) {
         	orderDetail.setId(id);
@@ -44,6 +45,7 @@ public class OrderDetailService {
         }
     }
 
+    @Transactional
     public void deleteOrderDetail(Long id) {
         if (orderDetailRepository.existsById(id)) {
         	orderDetailRepository.deleteById(id);

@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,10 +30,12 @@ public class UserService {
     	return userRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException("User not found"));
     }
 
+    @Transactional
     public User createUser(User user) {
         return userRepository.save(user);
     }
 
+    @Transactional
     public User updateUser(Integer id, User user) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));

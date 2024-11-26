@@ -6,8 +6,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.model.Order;
 import com.example.demo.model.OrderDetail;
 import com.example.demo.repository.OrderRepository;
-
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +29,20 @@ public class OrderService {
     }
 
     public List<Order> getAllOrderByUserId(int userId) {
-        return orderRepository.findByUserId(userId);
+        return orderRepository.findByUserIdOrderByCreatedAtDesc(userId);
     }
 
     public Optional<Order> getOrderById(Long id) {
         return orderRepository.findById(id);
     }
 
+
+    @Transactional
     public Order createOrder(Order order) {
         return orderRepository.save(order);
     }
 
+    @Transactional
     public Order updateOrder(Long id, Order order) {
         if (orderRepository.existsById(id)) {
         	order.setId(id);
@@ -50,6 +52,7 @@ public class OrderService {
         }
     }
 
+    @Transactional
     public void deleteOrder(Long id) {
         if (orderRepository.existsById(id)) {
         	orderRepository.deleteById(id);

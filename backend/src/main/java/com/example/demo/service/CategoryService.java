@@ -4,6 +4,7 @@ import com.example.demo.model.Category;
 import com.example.demo.model.MenuItem;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.MenuItemRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,10 +33,12 @@ public class CategoryService {
         return this.categoryRepository.findById(id);
     }
 
+    @Transactional
     public Category createCategory(Category canteen) {
         return this.categoryRepository.save(canteen);
     }
 
+    @Transactional
     public Category updateCategory(Long id, Category canteen) {
         if(this.categoryRepository.existsById(id)) {
             canteen.setId(id);
@@ -45,6 +48,7 @@ public class CategoryService {
         }
     }
 
+    @Transactional
     public void deleteCategory(Long id) {
         if(this.categoryRepository.existsById(id)) {
             this.categoryRepository.deleteById(id);

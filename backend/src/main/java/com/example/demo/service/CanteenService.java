@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.model.Canteen;
 import com.example.demo.repository.CanteenRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +26,11 @@ public class CanteenService {
         return this.canteenRepository.findById(id);
     }
 
+    @Transactional
     public Canteen createCanteen(Canteen canteen) {
         return this.canteenRepository.save(canteen);
     }
-
+    @Transactional
     public Canteen updateCanteen(Long id, Canteen canteen) {
         if(this.canteenRepository.existsById(id)) {
             canteen.setId(id);
@@ -37,7 +39,7 @@ public class CanteenService {
             throw new RuntimeException("Canteen not found");
         }
     }
-
+    @Transactional
     public void deleteCanteen(Long id) {
         if(this.canteenRepository.existsById(id)) {
             this.canteenRepository.deleteById(id);

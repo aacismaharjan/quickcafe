@@ -4,6 +4,7 @@ import com.example.demo.model.Menu;
 import com.example.demo.model.MenuItem;
 import com.example.demo.repository.MenuItemRepository;
 import com.example.demo.repository.MenuRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,10 +30,12 @@ public class MenuService {
         return this.menuRepository.findById(id);
     }
 
+    @Transactional
     public Menu createMenu(Menu menu) {
         return this.menuRepository.save(menu);
     }
 
+    @Transactional
     public Menu updateMenu(Long id, Menu menu) {
         if (this.menuRepository.existsById(id)) {
             menu.setId(id);
@@ -42,6 +45,7 @@ public class MenuService {
         }
     }
 
+    @Transactional
     public void deleteMenu(Long id) {
         if (this.menuRepository.existsById(id)) {
             this.menuRepository.deleteById(id);
@@ -50,6 +54,7 @@ public class MenuService {
         }
     }
 
+    @Transactional
     public Optional<Menu> addMenuItemToMenu (Long menuId, Long menuItemId) {
         Optional<Menu> menuOptional = menuRepository.findById(menuId);
         Optional<MenuItem> menuItemOptional = menuItemRepository.findById(menuItemId);
@@ -64,6 +69,7 @@ public class MenuService {
         return Optional.empty();
     }
 
+    @Transactional
     public boolean removeMenuItemFromMenu (Long menuId, Long menuItemId) {
         Optional<Menu> menuOptional = menuRepository.findById(menuId);
         Optional<MenuItem> menuItemOptional = menuItemRepository.findById(menuItemId);

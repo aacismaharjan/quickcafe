@@ -1,9 +1,6 @@
 package com.example.demo.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +19,9 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true, nullable = false) // Ensure UUID is unique and cannot be null
+    private String uuid; // UUID field
     
     @ManyToOne
     @NotNull(message = "User cannot be null")
@@ -31,8 +31,8 @@ public class Order {
     @NotNull(message = "Order status cannot be null")
     private String orderStatus;
 
-    @OneToMany(targetEntity = OrderDetail.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Collection<OrderDetail> orderDetails;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<OrderDetail> orderDetails;
 
 
     @NotNull(message = "Payment method cannot be null")
@@ -43,15 +43,10 @@ public class Order {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt = new Date();
+
+    @PrePersist
+    protected void onCreate() {
+        this.uuid = UUID.randomUUID().toString(); // Generate a unique UUID before persisting
+    }
 }
 
-enum PaymentMethod {
-    CASH,
-    KHALTI
-}
-
-enum PaymentStatus {
-    PENDING,
-    COMPLETED,
-    FAILED
-}

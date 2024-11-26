@@ -43,6 +43,7 @@ public class FavoriteService {
         return favoriteRepository.save(favorite);
     }
 
+    @Transactional
     public Favorite updateFavorite(Long id, Favorite favorite) {
         if (favoriteRepository.existsById(id)) {
         	favorite.setId(id);
@@ -52,6 +53,7 @@ public class FavoriteService {
         }
     }
 
+    @Transactional
     public void deleteFavorite(Long id) {
         if (favoriteRepository.existsById(id)) {
         	favoriteRepository.deleteById(id);

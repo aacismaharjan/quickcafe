@@ -6,6 +6,7 @@ import java.util.List;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -48,10 +49,23 @@ public class MenuItem {
     private List<Menu> menus= new ArrayList<>();
 
     @ManyToMany(mappedBy = "items")
-//    @JoinTable(
-//            name="tbl_category_menuItem",
-//            joinColumns = @JoinColumn(name = "menu_item_id"),
-//            inverseJoinColumns = @JoinColumn(name = "category_id")
-//    )
     private List<Category> categories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "menuItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
+
+    public ReviewStats getReviewsStat() {
+        if(reviews.isEmpty()) {
+            return new ReviewStats(0.0f, 0);
+        }
+        float totalRating = 0.0f;
+        int reviewerCount = reviews.size();
+
+        for(Review review: reviews) {
+            totalRating += review.getRating();
+        }
+
+        float averageRating = totalRating / reviewerCount;
+        return new ReviewStats(averageRating, reviewerCount);
+    }
 }

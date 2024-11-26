@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Menu;
 import com.example.demo.model.MenuItem;
+import com.example.demo.service.MenuItemService;
 import com.example.demo.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,12 @@ import java.util.Optional;
 @RequestMapping("/api/v1/menus")
 public class MenuController {
     private final MenuService menuService;
+    private final MenuItemService menuItemService;
 
     @Autowired
-    public MenuController(MenuService menuService) {
+    public MenuController(MenuService menuService, MenuItemService menuItemService) {
         this.menuService = menuService;
+        this.menuItemService = menuItemService;
     }
 
     @GetMapping
@@ -35,12 +38,26 @@ public class MenuController {
 
     @PostMapping
     public Menu createMenu(@RequestBody Menu menu) {
+        List<MenuItem> existingItems = menu.getItems().stream()
+                .map(item -> item.getId())
+                .map(itemId -> menuItemService.getMenuItemById(itemId)
+                        .orElseThrow(() -> new RuntimeException("Item not found with ID: " + itemId)))
+                .toList();
+
+        menu.setItems(existingItems);
         return menuService.createMenu(menu);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Menu> updateMenu(@PathVariable Long id, @RequestBody Menu menu) {
         try {
+            List<MenuItem> existingItems = menu.getItems().stream()
+                    .map(item -> item.getId())
+                    .map(itemId -> menuItemService.getMenuItemById(itemId)
+                            .orElseThrow(() -> new RuntimeException("Item not found with ID: " + itemId)))
+                    .toList();
+
+            menu.setItems(existingItems);
             Menu updatedMenu = menuService.updateMenu(id, menu);
             return ResponseEntity.ok(updatedMenu);
         } catch (RuntimeException e) {

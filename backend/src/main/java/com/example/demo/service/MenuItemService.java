@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -101,10 +102,12 @@ public class MenuItemService {
         return menuItemRepository.findById(id);
     }
 
+	@Transactional
     public MenuItem createMenuItem(MenuItem menuItem) {
         return menuItemRepository.save(menuItem);
     }
 
+	@Transactional
     public MenuItem updateMenuItem(Long id, MenuItem menuItem) {
         if (menuItemRepository.existsById(id)) {
             menuItem.setId(id);
@@ -114,6 +117,7 @@ public class MenuItemService {
         }
     }
 
+	@Transactional
     public void deleteMenuItem(Long id) {
         if (menuItemRepository.existsById(id)) {
             menuItemRepository.deleteById(id);

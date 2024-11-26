@@ -17,9 +17,6 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "canteen_id", nullable = false)
-    private Canteen canteen; // Reference to Canteen
 
     @NotBlank(message = "Menu name cannot be blank")
     @Size(max = 100, message = "Menu name cannot exceed 100 characters")
@@ -38,7 +35,8 @@ public class Menu {
     @JoinTable(
             name="tbl_menu_menu_items",
             joinColumns = @JoinColumn(name = "menu_id"),
-            inverseJoinColumns  = @JoinColumn(name = "item_id")
+            inverseJoinColumns  = @JoinColumn(name = "item_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"menu_id", "item_id"})
     )
     private List<MenuItem> items = new ArrayList<>();
 }
